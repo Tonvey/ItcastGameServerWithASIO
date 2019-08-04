@@ -79,7 +79,6 @@ void AOI_world::AddPlayer(AOI_Player * _player)
 	{
 		//将该玩家添加到对应格子
 		m_grids[idx]->m_players.push_back(_player);
-		cout << "添加玩家到格子:" << idx << endl;
 	}
 
 }
@@ -90,7 +89,7 @@ void AOI_world::DelPlayer(AOI_Player * _player)
 	int x = _player->GetX();
 	int y = _player->GetY();
 	int idx = this->calculate_grid_idx(x, y);
-	m_grids[idx]->m_players.remove(_player);
+    m_grids[idx]->m_players.remove(_player);
 }
 
 //定义垃圾工人

@@ -45,7 +45,6 @@ void Session::do_read()
         boost::asio::buffer(data_, max_length),
         [this, self](boost::system::error_code ec, std::size_t length)
         {
-            cout<<"on read"<<endl;
             if (!ec)
             {
                 string data(data_,length);
@@ -56,7 +55,7 @@ void Session::do_read()
                 cout<<readableStr<<endl;
                 cout<<"-----------------------------------"<<endl;
                 auto ud = this->mProtocol.raw2request(data);
-                this->mRole.ProcMsg(*ud);
+                this->mProtocol.mRole.ProcMsg(*ud);
                 delete ud;
                 do_read();
             }

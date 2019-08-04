@@ -3,11 +3,6 @@
 #include "Logger.h"
 using namespace std;
 GG_NAMESPACE_BEGIN
-//server(boost::asio::io_context& io_context, short port)
-//    : acceptor_(io_context, tcp::endpoint(tcp::v4(), port))
-//{
-//    do_accept();
-//}
 Server::Server(int port)
     :acceptor_(io_context, tcp::endpoint(tcp::v4(), port))
 {

@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.8.0)
+project(GameServer)
 set(CMAKE_CXX_STANDARD 11)
 file(GLOB srcs ./src/*.cpp ./proto/*.cc)
 include_directories(./ ./proto)

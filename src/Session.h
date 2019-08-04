@@ -14,7 +14,6 @@ public:
 private:
     friend GameProtocol;
     GameProtocol mProtocol;
-    GameRole mRole;
     void do_read();
     void do_write(std::string &out);
     tcp::socket socket_;

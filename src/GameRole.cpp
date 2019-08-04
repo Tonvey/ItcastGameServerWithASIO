@@ -7,6 +7,7 @@
 #include <ctime>
 #include "GameProtocol.h"
 #include "RandomName.h"
+#include "GameController.h"
 using namespace std;
 
 static std::default_random_engine  g_random_creator(time(NULL));
@@ -14,6 +15,7 @@ static std::default_random_engine  g_random_creator(time(NULL));
 static int gPlayerCount = 0;
 GameRole::GameRole()
 {
+    GameController::getInstance().mGameRoles.push_back(this);
 	mPlayerId = ++gPlayerCount;
 	//玩家名字 player_1 player_2 ....
 	//mPlayerName = string("Player_") + std::to_string(gPlayerCount);
@@ -74,7 +76,7 @@ bool GameRole::Init()
 		msg = MakeInitPosBroadcast();//产生当前玩家的出生信息
         //TODO:
 		//ZinxKernel::Zinx_SendOut(*msg, *(Iprotocol*)role->mProtocol);
-        this->mProtocol->SendOut(*msg);
+        role->mProtocol->SendOut(*msg);
 
 		//3.2 告诉这个上线玩家,本来世界上有xxx玩家
 		//msg = role->MakeInitPosBroadcast();//产生当前玩家的出生信息
@@ -133,7 +135,7 @@ void GameRole::Fini()
 		auto msg = MakeLogoffSyncPid();//产生当前玩家的下线消息
         //TODO:
 		//ZinxKernel::Zinx_SendOut(*msg, *(Iprotocol*)role->mProtocol);
-        this->mProtocol->SendOut(*msg);
+        role->mProtocol->SendOut(*msg);
 
 	}
 
@@ -188,7 +190,7 @@ void GameRole::ProcNewPosition(float _x, float _y, float _z, float _v)
 		auto msg = MakeNewPosBroadcast();
         //TODO:
 		//ZinxKernel::Zinx_SendOut(*msg, *(Iprotocol*)role->mProtocol);
-        this->mProtocol->SendOut(*msg);
+        role->mProtocol->SendOut(*msg);
 
 	}
 }
@@ -210,13 +212,15 @@ void GameRole::ProcTalkContent(std::string content)
 		//获取世界所有玩家,发送广播消息
         //TODO
 		//auto roleList = ZinxKernel::Zinx_GetAllRole();
-		//for (auto r : roleList)
-		//{
-		//	auto role = dynamic_cast<GameRole*>(r);
-		//	auto msg = MakeTalkBroadcast(content);
-        //    //TODO
-		//	//ZinxKernel::Zinx_SendOut(*msg, *(Iprotocol*)role->mProtocol);
-		//}
+		auto roleList = GameController::getInstance().mGameRoles;
+		for (auto r : roleList)
+		{
+			auto role = dynamic_cast<GameRole*>(r);
+			auto msg = MakeTalkBroadcast(content);
+            //TODO
+			//ZinxKernel::Zinx_SendOut(*msg, *(Iprotocol*)role->mProtocol);
+            this->mProtocol->SendOut(*msg);
+		}
 	}
 }
 
@@ -243,7 +247,7 @@ void GameRole::ViewDisappear(std::list<AOI_Player*>& oldList, std::list<AOI_Play
 		msg = this->MakeLogoffSyncPid();
         //TODO
 		//ZinxKernel::Zinx_SendOut(*msg, *(Iprotocol*)role->mProtocol);
-        this->mProtocol->SendOut(*msg);
+        role->mProtocol->SendOut(*msg);
 	}
 }
 
@@ -269,7 +273,7 @@ void GameRole::ViewAppear(std::list<AOI_Player*>& oldList, std::list<AOI_Player*
 
 		msg = this->MakeInitPosBroadcast();
 		//ZinxKernel::Zinx_SendOut(*msg, *(Iprotocol*)role->mProtocol);
-        this->mProtocol->SendOut(*msg);
+        role->mProtocol->SendOut(*msg);
 	}
 }
 
