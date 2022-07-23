@@ -76,6 +76,8 @@ void Session::do_write(string &out)
     cout<<readableStr<<endl;
     cout<<"-----------------------------------"<<endl;
 
+    // TODO: 这里需要考虑频繁调用的重入情况,boost不支持重入,所以同一时间只能有一个async_write在执行,
+    // 解决方案,改为message queue的方式,async_write 回调之后再从 queue里边获取下一条消息继续write
     auto self(shared_from_this());
     boost::asio::async_write(socket_, boost::asio::buffer(out.data(), out.size()),
         [this, self](boost::system::error_code ec, std::size_t /*length*/)
